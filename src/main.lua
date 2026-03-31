@@ -40,7 +40,7 @@ public.definition = {
     modpack      = PACK_ID, -- Opts this module into pack discovery
     id           = "RunDirectorGodPool",
     name         = "God Pool",
-    category     = "Run Director",
+    category     = "God Pool",
     group        = "Run Setup",
     tooltip      = "Control which gods enter the run, biome priorities, and first-room hammer behavior.",
     default      = false,
@@ -62,30 +62,30 @@ public.definition = {
     options      = {
         { type = "separator", label = "God Pool" },
         { type = "stepper",  configKey = "MaxGodsPerRun",                    label = "Max Gods Per Run",            default = 4,              min = 1,     max = 9 },
-        { type = "checkbox", configKey = "AphroditeEnabled",                 label = "Aphrodite In Pool",           default = true },
-        { type = "checkbox", configKey = "ApolloEnabled",                    label = "Apollo In Pool",              default = true },
-        { type = "checkbox", configKey = "AresEnabled",                      label = "Ares In Pool",                default = true },
-        { type = "checkbox", configKey = "DemeterEnabled",                   label = "Demeter In Pool",             default = true },
-        { type = "checkbox", configKey = "HephaestusEnabled",                label = "Hephaestus In Pool",          default = true },
-        { type = "checkbox", configKey = "HeraEnabled",                      label = "Hera In Pool",                default = true },
-        { type = "checkbox", configKey = "HestiaEnabled",                    label = "Hestia In Pool",              default = true },
-        { type = "checkbox", configKey = "PoseidonEnabled",                  label = "Poseidon In Pool",            default = true },
-        { type = "checkbox", configKey = "ZeusEnabled",                      label = "Zeus In Pool",                default = true },
+        { type = "checkbox", configKey = "AphroditeEnabled",                 label = "Aphrodite",           default = true },
+        { type = "checkbox", configKey = "ApolloEnabled",                    label = "Apollo",              default = true },
+        { type = "checkbox", configKey = "AresEnabled",                      label = "Ares",                default = true },
+        { type = "checkbox", configKey = "DemeterEnabled",                   label = "Demeter",             default = true },
+        { type = "checkbox", configKey = "HephaestusEnabled",                label = "Hephaestus",          default = true },
+        { type = "checkbox", configKey = "HeraEnabled",                      label = "Hera",                default = true },
+        { type = "checkbox", configKey = "HestiaEnabled",                    label = "Hestia",              default = true },
+        { type = "checkbox", configKey = "PoseidonEnabled",                  label = "Poseidon",            default = true },
+        { type = "checkbox", configKey = "ZeusEnabled",                      label = "Zeus",                default = true },
 
-        { type = "separator", label = "Macro" },
-        { type = "checkbox", configKey = "KeepsakeAddsGod",                  label = "Keepsake Adds God",           default = false },
-        { type = "checkbox", configKey = "PreventEarlySeleneHermes",         label = "Prevent Early Selene/Hermes", default = false },
-        { type = "checkbox", configKey = "PrioritizeHammerFirstRoomEnabled", label = "Force Hammer First Room",     default = false },
+        { type = "separator", label = "Options" },
+        { type = "checkbox", configKey = "KeepsakeAddsGod",                  label = "God Keepsakes Add to The Pool",           default = false },
+        { type = "checkbox", configKey = "PreventEarlySeleneHermes",         label = "Prevent Early Selene/Hermes",             default = false },
+        { type = "checkbox", configKey = "PrioritizeHammerFirstRoomEnabled", label = "Force Hammer First Room",                 default = false },
 
         { type = "separator", label = "Biome Priority" },
-        { type = "checkbox", configKey = "PrioritizeSpecificRewardEnabled",  label = "Enable Biome Priority",       default = false },
+        { type = "checkbox", configKey = "PrioritizeSpecificRewardEnabled",  label = "Choose First Boon in Each Biome",       default = false },
         { type = "dropdown", configKey = "PriorityBiome1",                   label = "Biome 1 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
         { type = "dropdown", configKey = "PriorityBiome2",                   label = "Biome 2 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
         { type = "dropdown", configKey = "PriorityBiome3",                   label = "Biome 3 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
         { type = "dropdown", configKey = "PriorityBiome4",                   label = "Biome 4 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
 
         { type = "separator", label = "Trial Priority" },
-        { type = "checkbox", configKey = "PrioritizeTrialRewardEnabled",     label = "Enable Trial Priority",       default = false },
+        { type = "checkbox", configKey = "PrioritizeTrialRewardEnabled",     label = "Choose Boons Priority in Trial Rooms",       default = false },
         { type = "dropdown", configKey = "PriorityTrial1",                   label = "Trial Priority A",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeTrialRewardEnabled", indent = true },
         { type = "dropdown", configKey = "PriorityTrial2",                   label = "Trial Priority B",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeTrialRewardEnabled", indent = true },
     },
@@ -118,6 +118,12 @@ end
 
 public.definition.apply = apply
 public.definition.revert = revert
+public.isGodEnabledInPool = function(godKey)
+    if internal.IsGodEnabledInPool then
+        return internal.IsGodEnabledInPool(godKey)
+    end
+    return true
+end
 
 local loader = reload.auto_single()
 
