@@ -21,7 +21,6 @@ local lib = mods['adamant-ModpackLib']
 
 local config = chalk.auto('config.lua')
 
-local backup, revert = lib.createBackupSystem()
 
 local PACK_ID = "run-director"
 RunDirectorGodPool_Internal = RunDirectorGodPool_Internal or {}
@@ -43,8 +42,7 @@ public.definition = {
     group        = "Run Setup",
     tooltip      = "Control which gods enter the run, biome priorities, and first-room hammer behavior.",
     default      = false,
-    dataMutation = true, -- true if apply() modifies game tables, false for hook-only mods
-    mutationMode = lib.MutationMode.Hybrid,
+    affectsRunData = true, -- true if lifecycle changes require run-data rebuilds, false for hook-only mods
 
     -- Optional: inline options rendered below the checkbox in standalone and Framework UI.
     -- Lib/Framework manage uiState, hashing, and persistence — module just reads store values in hooks.
@@ -98,12 +96,6 @@ internal.store = public.store
 -- FILL: apply() — mutate game data (use backup before changes)
 -- =============================================================================
 
-local function apply()
-    if internal.ApplyDataMutation then
-        internal.ApplyDataMutation(backup)
-    end
-end
-
 public.definition.patchPlan = function(plan)
     if internal.BuildPatchPlan then
         internal.BuildPatchPlan(plan)
@@ -121,12 +113,21 @@ local function registerHooks()
     end
 end
 
+local function init()
+    import_as_fallback(rom.game)
+    registerHooks()
+    if lib.isEnabled(public.store, public.definition.modpack) then
+        lib.applyDefinition(public.definition, public.store)
+    end
+    if public.definition.affectsRunData and not lib.isCoordinated(public.definition.modpack) then
+        SetupRunData()
+    end
+end
+
 -- =============================================================================
 -- Wiring (do not modify)
 -- =============================================================================
 
-public.definition.apply = apply
-public.definition.revert = revert
 public.isGodEnabledInPool = function(godKey)
     if internal.IsGodEnabledInPool then
         return internal.IsGodEnabledInPool(godKey)
@@ -137,16 +138,7 @@ end
 local loader = reload.auto_single()
 
 modutil.once_loaded.game(function()
-    loader.load(function()
-        import_as_fallback(rom.game)
-        registerHooks()
-        if lib.isEnabled(public.store, public.definition.modpack) then
-            lib.applyDefinition(public.definition, public.store)
-        end
-        if public.definition.dataMutation and not lib.isCoordinated(public.definition.modpack) then
-            SetupRunData()
-        end
-    end)
+    loader.load(init, init)
 end)
 
 -- Standalone UI — menu-bar toggle when coordinator is not installed

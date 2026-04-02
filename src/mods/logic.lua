@@ -31,28 +31,6 @@ function internal.IsGodEnabledInPool(godKey)
     return Read(god.configKey) ~= false
 end
 
-local function ListContainsEquivalent(list, template)
-    if type(list) ~= "table" then return false end
-    for _, entry in ipairs(list) do
-        local same = true
-        for k, v in pairs(template) do
-            if type(v) == "table" then
-                if not ListContainsEquivalent({ entry[k] }, v) then
-                    same = false
-                    break
-                end
-            elseif entry[k] ~= v then
-                same = false
-                break
-            end
-        end
-        if same then
-            return true
-        end
-    end
-    return false
-end
-
 local function PriorityKeyForBiome(biomeIndex)
     biomeIndex = math.max((biomeIndex or 0) - 1, 0)
     if biomeIndex == 0 then return Read("PriorityBiome1") or "" end
@@ -68,46 +46,44 @@ local function PriorityKeyForTrial(trialIndex)
     return ""
 end
 
-local function EnsurePreventEarlySeleneHermesRequirement(backup)
-    local additionalReq = {
-        Path = { "CurrentRun", "LootTypeHistory" },
-        CountOf = {
-            "AphroditeUpgrade", "ApolloUpgrade", "DemeterUpgrade",
-            "HephaestusUpgrade", "HestiaUpgrade", "HeraUpgrade",
-            "PoseidonUpgrade", "ZeusUpgrade", "AresUpgrade",
-        },
-        Comparison = ">=",
-        Value = 1,
-    }
-
-    backup(EncounterData, "BaseArtemisCombat")
-    EncounterData.BaseArtemisCombat.RequireNotRoomReward = {
-        "Boon", "SpellDrop", "Devotion", "HermesUpgrade", "WeaponUpgrade",
+local PREVENT_EARLY_REQUIREMENT = {
+    Path = { "CurrentRun", "LootTypeHistory" },
+    CountOf = {
         "AphroditeUpgrade", "ApolloUpgrade", "DemeterUpgrade",
         "HephaestusUpgrade", "HestiaUpgrade", "HeraUpgrade",
         "PoseidonUpgrade", "ZeusUpgrade", "AresUpgrade",
-    }
+    },
+    Comparison = ">=",
+    Value = 1,
+}
 
-    for _, key in ipairs({ "SpellDropRequirements", "HermesUpgradeRequirements", "HammerLootRequirements" }) do
-        backup(NamedRequirementsData, key)
-        local list = DeepCopyTable(NamedRequirementsData[key] or {})
-        if not ListContainsEquivalent(list, additionalReq) then
-            table.insert(list, DeepCopyTable(additionalReq))
-        end
-        NamedRequirementsData[key] = list
-    end
-end
+local PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD = {
+    "Boon", "SpellDrop", "Devotion", "HermesUpgrade", "WeaponUpgrade",
+    "AphroditeUpgrade", "ApolloUpgrade", "DemeterUpgrade",
+    "HephaestusUpgrade", "HestiaUpgrade", "HeraUpgrade",
+    "PoseidonUpgrade", "ZeusUpgrade", "AresUpgrade",
+}
+
+local PREVENT_EARLY_REQUIREMENT_KEYS = {
+    "SpellDropRequirements",
+    "HermesUpgradeRequirements",
+    "HammerLootRequirements",
+}
 
 function internal.BuildPatchPlan(plan)
     plan:setMany(WeaponShopItemData.ToolExorcismBook2, { ElementChance = 1.0 })
     plan:setMany(WeaponShopItemData.ToolShovel2, { ElementChance = 1.0 })
     plan:setMany(WeaponShopItemData.ToolPickaxe2, { ElementChance = 1.0 })
     plan:setMany(WeaponShopItemData.ToolFishingRod2, { ElementChance = 1.0 })
-end
-
-function internal.ApplyDataMutation(backup)
     if Read("PreventEarlySeleneHermes") then
-        EnsurePreventEarlySeleneHermesRequirement(backup)
+        plan:set(
+            EncounterData.BaseArtemisCombat,
+            "RequireNotRoomReward",
+            PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD
+        )
+        for _, key in ipairs(PREVENT_EARLY_REQUIREMENT_KEYS) do
+            plan:appendUnique(NamedRequirementsData, key, PREVENT_EARLY_REQUIREMENT)
+        end
     end
 end
 
