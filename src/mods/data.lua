@@ -15,12 +15,8 @@ internal.godList = {
 
 internal.lootKeyLookup = {}
 internal.godLookup = {}
-internal.priorityOptions = { "" }
-internal.priorityDisplayValues = { [""] = "None" }
 
 for _, god in ipairs(internal.godList) do
     internal.lootKeyLookup[god.lootKey] = god
     internal.godLookup[god.key] = god
-    table.insert(internal.priorityOptions, god.lootKey)
-    internal.priorityDisplayValues[god.lootKey] = god.key
 end

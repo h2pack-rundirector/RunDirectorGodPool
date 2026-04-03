@@ -1,12 +1,3 @@
--- =============================================================================
--- ADAMANT MODULE TEMPLATE
--- =============================================================================
--- Copy this file as src/main.lua in a new mod folder.
--- Fill in the sections marked FILL below.
---
--- Works standalone with its own ImGui toggle.
--- When the coordinator is installed, the Framework handles UI — standalone UI is skipped.
-
 local mods = rom.mods
 mods['SGG_Modding-ENVY'].auto()
 
@@ -27,8 +18,6 @@ RunDirectorGodPool_Internal = RunDirectorGodPool_Internal or {}
 
 import("mods/data.lua")
 local internal = RunDirectorGodPool_Internal
-local priorityOptions = internal.priorityOptions
-local priorityDisplayValues = internal.priorityDisplayValues
 
 -- =============================================================================
 -- FILL: Module definition
@@ -40,7 +29,7 @@ public.definition = {
     name         = "God Pool",
     category     = "God Pool",
     group        = "Run Setup",
-    tooltip      = "Control which gods enter the run, biome priorities, and first-room hammer behavior.",
+    tooltip      = "Control which gods enter the run, first-room hammer behavior, and pool support rules.",
     default      = false,
     affectsRunData = true, -- true if lifecycle changes require run-data rebuilds, false for hook-only mods
 
@@ -73,19 +62,8 @@ public.definition = {
         { type = "separator", label = "Options" },
         { type = "checkbox", configKey = "KeepsakeAddsGod",                  label = "God Keepsakes Add to The Pool",           default = false },
         { type = "checkbox", configKey = "PreventEarlySeleneHermes",         label = "Prevent Early Selene/Hermes",             default = false },
+        { type = "checkbox", configKey = "BoostElementGathering",            label = "Guarantee Element from Gathering Tool",                 default = true },
         { type = "checkbox", configKey = "PrioritizeHammerFirstRoomEnabled", label = "Force Hammer First Room",                 default = false },
-
-        { type = "separator", label = "Biome Priority" },
-        { type = "checkbox", configKey = "PrioritizeSpecificRewardEnabled",  label = "Choose First Boon in Each Biome",       default = false },
-        { type = "dropdown", configKey = "PriorityBiome1",                   label = "Biome 1 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
-        { type = "dropdown", configKey = "PriorityBiome2",                   label = "Biome 2 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
-        { type = "dropdown", configKey = "PriorityBiome3",                   label = "Biome 3 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
-        { type = "dropdown", configKey = "PriorityBiome4",                   label = "Biome 4 Priority",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeSpecificRewardEnabled", indent = true },
-
-        { type = "separator", label = "Trial Priority" },
-        { type = "checkbox", configKey = "PrioritizeTrialRewardEnabled",     label = "Choose Boons Priority in Trial Rooms",       default = false },
-        { type = "dropdown", configKey = "PriorityTrial1",                   label = "Trial Priority A",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeTrialRewardEnabled", indent = true },
-        { type = "dropdown", configKey = "PriorityTrial2",                   label = "Trial Priority B",            values = priorityOptions, displayValues = priorityDisplayValues, default = "", visibleIf = "PrioritizeTrialRewardEnabled", indent = true },
     },
 }
 

@@ -17,7 +17,6 @@ function internal.GetRunState()
         CurrentRun.RunDirector_GodPool_State = {
             EnabledGodsOverride = {},
             MaxGodsPerRunOverride = nil,
-            BiomePrioritySatisfied = {},
         }
     end
     return CurrentRun.RunDirector_GodPool_State
@@ -27,21 +26,6 @@ function internal.IsGodEnabledInPool(godKey)
     local god = godLookup[godKey]
     if not god then return true end
     return Read(god.configKey) ~= false
-end
-
-local function PriorityKeyForBiome(biomeIndex)
-    biomeIndex = math.max((biomeIndex or 0) - 1, 0)
-    if biomeIndex == 0 then return Read("PriorityBiome1") or "" end
-    if biomeIndex == 1 then return Read("PriorityBiome2") or "" end
-    if biomeIndex == 2 then return Read("PriorityBiome3") or "" end
-    if biomeIndex == 3 then return Read("PriorityBiome4") or "" end
-    return ""
-end
-
-local function PriorityKeyForTrial(trialIndex)
-    if trialIndex == 1 then return Read("PriorityTrial1") or "" end
-    if trialIndex == 2 then return Read("PriorityTrial2") or "" end
-    return ""
 end
 
 local PREVENT_EARLY_REQUIREMENT = {
@@ -55,12 +39,12 @@ local PREVENT_EARLY_REQUIREMENT = {
     Value = 1,
 }
 
-local PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD = {
-    "Boon", "SpellDrop", "Devotion", "HermesUpgrade", "WeaponUpgrade",
-    "AphroditeUpgrade", "ApolloUpgrade", "DemeterUpgrade",
-    "HephaestusUpgrade", "HestiaUpgrade", "HeraUpgrade",
-    "PoseidonUpgrade", "ZeusUpgrade", "AresUpgrade",
-}
+-- local PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD = {
+--     "Boon", "SpellDrop", "Devotion", "HermesUpgrade", "WeaponUpgrade",
+--     "AphroditeUpgrade", "ApolloUpgrade", "DemeterUpgrade",
+--     "HephaestusUpgrade", "HestiaUpgrade", "HeraUpgrade",
+--     "PoseidonUpgrade", "ZeusUpgrade", "AresUpgrade",
+-- }
 
 local PREVENT_EARLY_REQUIREMENT_KEYS = {
     "SpellDropRequirements",
@@ -69,16 +53,19 @@ local PREVENT_EARLY_REQUIREMENT_KEYS = {
 }
 
 function internal.BuildPatchPlan(plan)
-    plan:setMany(WeaponShopItemData.ToolExorcismBook2, { ElementChance = 1.0 })
-    plan:setMany(WeaponShopItemData.ToolShovel2, { ElementChance = 1.0 })
-    plan:setMany(WeaponShopItemData.ToolPickaxe2, { ElementChance = 1.0 })
-    plan:setMany(WeaponShopItemData.ToolFishingRod2, { ElementChance = 1.0 })
+    if Read("BoostElementGathering") then
+        plan:setMany(WeaponShopItemData.ToolExorcismBook2, { ElementChance = 1.0 })
+        plan:setMany(WeaponShopItemData.ToolShovel2, { ElementChance = 1.0 })
+        plan:setMany(WeaponShopItemData.ToolPickaxe2, { ElementChance = 1.0 })
+        plan:setMany(WeaponShopItemData.ToolFishingRod2, { ElementChance = 1.0 })
+    end
+
     if Read("PreventEarlySeleneHermes") then
-        plan:set(
-            EncounterData.BaseArtemisCombat,
-            "RequireNotRoomReward",
-            PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD
-        )
+        -- plan:set(
+        --     EncounterData.BaseArtemisCombat,
+        --     "RequireNotRoomReward",
+        --     PREVENT_EARLY_REQUIRE_NOT_ROOM_REWARD
+        -- )
         for _, key in ipairs(PREVENT_EARLY_REQUIREMENT_KEYS) do
             plan:appendUnique(NamedRequirementsData, key, PREVENT_EARLY_REQUIREMENT)
         end
@@ -92,19 +79,10 @@ function internal.RegisterHooks()
         local state = internal.GetRunState()
         if not state then return base(excludeLootNames) end
         state.MaxGodsPerRunOverride = state.MaxGodsPerRunOverride or Read("MaxGodsPerRun")
-        state.BiomePrioritySatisfied = state.BiomePrioritySatisfied or {}
 
         local eligible = base(excludeLootNames)
         local filtered = {}
         local overrides = state.EnabledGodsOverride or {}
-        local currentBiomeIndex = CurrentRun and CurrentRun.ClearedBiomes or 0
-        local priorityLootKey = PriorityKeyForBiome(currentBiomeIndex)
-
-        local isPriorityMode = Read("PrioritizeSpecificRewardEnabled") and priorityLootKey ~= "" and
-            not state.BiomePrioritySatisfied[currentBiomeIndex]
-        if isPriorityMode and Contains(eligible, priorityLootKey) then
-            return { priorityLootKey }
-        end
 
         for _, lootName in ipairs(eligible) do
             if overrides[lootName] then
@@ -165,32 +143,7 @@ function internal.RegisterHooks()
             end
         end
 
-        local result = base(args)
-        if Read("PrioritizeSpecificRewardEnabled") and
-        lootName == PriorityKeyForBiome(CurrentRun and CurrentRun.ClearedBiomes or 0) then
-            state.BiomePrioritySatisfied[CurrentRun and CurrentRun.ClearedBiomes or 0] = true
-        end
-        return result
-    end)
-
-    modutil.mod.Path.Wrap("SetupRoomReward", function(base, currentRun, room, previouslyChosenRewards, args)
-        base(currentRun, room, previouslyChosenRewards, args)
-        if not IsEnabled() then return end
-        local chosenRewardType = args and args.ChosenRewardType or room.ChosenRewardType
-        if chosenRewardType ~= "Devotion" or not room or not room.Encounter then return end
-
-        if not Read("PrioritizeTrialRewardEnabled") then return end
-
-        local prioA = PriorityKeyForTrial(1)
-        local prioB = PriorityKeyForTrial(2)
-        local interacted = GetInteractedGodsThisRun() or {}
-        if prioA ~= "" and prioB ~= "" and prioA ~= prioB and
-        Contains(interacted, prioA) and Contains(interacted, prioB)
-            and Contains(GetEligibleLootNames(), prioA)
-            and Contains(GetEligibleLootNames({ prioA }), prioB) then
-            room.Encounter.LootAName = prioA
-            room.Encounter.LootBName = prioB
-        end
+        return base(args)
     end)
 
     modutil.mod.Path.Wrap("SpawnRoomReward", function(base, eventSource, args)

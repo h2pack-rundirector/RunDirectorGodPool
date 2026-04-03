@@ -5,8 +5,7 @@ return {
     MaxGodsPerRun = 4,
     KeepsakeAddsGod = false,
     PreventEarlySeleneHermes = false,
-    PrioritizeSpecificRewardEnabled = false,
-    PrioritizeTrialRewardEnabled = false,
+    BoostElementGathering = true,
     PrioritizeHammerFirstRoomEnabled = false,
 
     AphroditeEnabled = true,
@@ -18,11 +17,4 @@ return {
     HestiaEnabled = true,
     PoseidonEnabled = true,
     ZeusEnabled = true,
-
-    PriorityBiome1 = "",
-    PriorityBiome2 = "",
-    PriorityBiome3 = "",
-    PriorityBiome4 = "",
-    PriorityTrial1 = "",
-    PriorityTrial2 = "",
 }
