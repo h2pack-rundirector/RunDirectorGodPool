@@ -10,6 +10,7 @@ local chalk = mods['SGG_Modding-Chalk']
 local reload = mods['SGG_Modding-ReLoad']
 lib = mods['adamant-ModpackLib']
 
+local dataDefaults = import("config.lua")
 local config = chalk.auto('config.lua')
 
 
@@ -35,20 +36,20 @@ public.definition = {
 }
 
 public.definition.storage = {
-    { type = "int",    alias = "MaxGodsPerRun",                    configKey = "MaxGodsPerRun",                    default = config.MaxGodsPerRun,                    min = 1, max = 9 },
-    { type = "bool",   alias = "AphroditeEnabled",                 configKey = "AphroditeEnabled",                 default = config.AphroditeEnabled },
-    { type = "bool",   alias = "ApolloEnabled",                    configKey = "ApolloEnabled",                    default = config.ApolloEnabled },
-    { type = "bool",   alias = "AresEnabled",                      configKey = "AresEnabled",                      default = config.AresEnabled },
-    { type = "bool",   alias = "DemeterEnabled",                   configKey = "DemeterEnabled",                   default = config.DemeterEnabled },
-    { type = "bool",   alias = "HephaestusEnabled",                configKey = "HephaestusEnabled",                default = config.HephaestusEnabled },
-    { type = "bool",   alias = "HeraEnabled",                      configKey = "HeraEnabled",                      default = config.HeraEnabled },
-    { type = "bool",   alias = "HestiaEnabled",                    configKey = "HestiaEnabled",                    default = config.HestiaEnabled },
-    { type = "bool",   alias = "PoseidonEnabled",                  configKey = "PoseidonEnabled",                  default = config.PoseidonEnabled },
-    { type = "bool",   alias = "ZeusEnabled",                      configKey = "ZeusEnabled",                      default = config.ZeusEnabled },
-    { type = "bool",   alias = "KeepsakeAddsGod",                  configKey = "KeepsakeAddsGod",                  default = config.KeepsakeAddsGod },
-    { type = "bool",   alias = "PreventEarlySeleneHermes",         configKey = "PreventEarlySeleneHermes",         default = config.PreventEarlySeleneHermes },
-    { type = "bool",   alias = "BoostElementGathering",            configKey = "BoostElementGathering",            default = config.BoostElementGathering },
-    { type = "bool",   alias = "PrioritizeHammerFirstRoomEnabled", configKey = "PrioritizeHammerFirstRoomEnabled", default = config.PrioritizeHammerFirstRoomEnabled },
+    { type = "int",    alias = "MaxGodsPerRun",                    configKey = "MaxGodsPerRun",                    min = 1, max = 9 },
+    { type = "bool",   alias = "AphroditeEnabled",                 configKey = "AphroditeEnabled" },
+    { type = "bool",   alias = "ApolloEnabled",                    configKey = "ApolloEnabled" },
+    { type = "bool",   alias = "AresEnabled",                      configKey = "AresEnabled" },
+    { type = "bool",   alias = "DemeterEnabled",                   configKey = "DemeterEnabled" },
+    { type = "bool",   alias = "HephaestusEnabled",                configKey = "HephaestusEnabled" },
+    { type = "bool",   alias = "HeraEnabled",                      configKey = "HeraEnabled" },
+    { type = "bool",   alias = "HestiaEnabled",                    configKey = "HestiaEnabled" },
+    { type = "bool",   alias = "PoseidonEnabled",                  configKey = "PoseidonEnabled" },
+    { type = "bool",   alias = "ZeusEnabled",                      configKey = "ZeusEnabled" },
+    { type = "bool",   alias = "KeepsakeAddsGod",                  configKey = "KeepsakeAddsGod" },
+    { type = "bool",   alias = "PreventEarlySeleneHermes",         configKey = "PreventEarlySeleneHermes" },
+    { type = "bool",   alias = "BoostElementGathering",            configKey = "BoostElementGathering" },
+    { type = "bool",   alias = "PrioritizeHammerFirstRoomEnabled", configKey = "PrioritizeHammerFirstRoomEnabled" },
 }
 
 public.definition.ui = {
@@ -71,7 +72,7 @@ public.definition.ui = {
     { type = "checkbox", binds = { value = "PrioritizeHammerFirstRoomEnabled" }, label = "Force Hammer First Room" },
 }
 
-public.store = lib.createStore(config, public.definition)
+public.store = lib.createStore(config, public.definition, dataDefaults)
 store = public.store
 
 -- =============================================================================
