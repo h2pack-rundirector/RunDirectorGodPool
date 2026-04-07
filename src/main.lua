@@ -26,12 +26,11 @@ local internal = RunDirectorGodPool_Internal
 
 public.definition = {
     modpack      = PACK_ID, -- Opts this module into pack discovery
-    id           = "RunDirectorGodPool",
+    id           = "GodPool",
     name         = "God Pool",
     category     = "God Pool",
-    group        = "Run Setup",
     tooltip      = "Control which gods enter the run, first-room hammer behavior, and pool support rules.",
-    default      = false,
+    default      = dataDefaults.Enabled,
     affectsRunData = true, -- true if lifecycle changes require run-data rebuilds, false for hook-only mods
 }
 
