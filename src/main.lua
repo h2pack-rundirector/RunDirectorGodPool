@@ -52,23 +52,29 @@ public.definition.storage = {
 }
 
 public.definition.ui = {
-    { type = "separator", label = "God Pool" },
-    { type = "stepper",  binds = { value = "MaxGodsPerRun" },            label = "Max Gods Per Run", quick = true, min = 1, max = 9, step = 1 },
-    { type = "checkbox", binds = { value = "AphroditeEnabled" },         label = "Aphrodite",        quick = true },
-    { type = "checkbox", binds = { value = "ApolloEnabled" },            label = "Apollo",           quick = true },
-    { type = "checkbox", binds = { value = "AresEnabled" },              label = "Ares",             quick = true },
-    { type = "checkbox", binds = { value = "DemeterEnabled" },           label = "Demeter",          quick = true },
-    { type = "checkbox", binds = { value = "HephaestusEnabled" },        label = "Hephaestus",       quick = true },
-    { type = "checkbox", binds = { value = "HeraEnabled" },              label = "Hera",             quick = true },
-    { type = "checkbox", binds = { value = "HestiaEnabled" },            label = "Hestia",           quick = true },
-    { type = "checkbox", binds = { value = "PoseidonEnabled" },          label = "Poseidon",         quick = true },
-    { type = "checkbox", binds = { value = "ZeusEnabled" },              label = "Zeus",             quick = true },
+    {
+        type = "vstack",
+        gap = 8,
+        children = {
+            { type = "text", text = "God Pool" },
+            { type = "stepper",  binds = { value = "MaxGodsPerRun" },            label = "Max Gods Per Run", quick = true, min = 1, max = 9, step = 1 },
+            { type = "checkbox", binds = { value = "AphroditeEnabled" },         label = "Aphrodite",        quick = true },
+            { type = "checkbox", binds = { value = "ApolloEnabled" },            label = "Apollo",           quick = true },
+            { type = "checkbox", binds = { value = "AresEnabled" },              label = "Ares",             quick = true },
+            { type = "checkbox", binds = { value = "DemeterEnabled" },           label = "Demeter",          quick = true },
+            { type = "checkbox", binds = { value = "HephaestusEnabled" },        label = "Hephaestus",       quick = true },
+            { type = "checkbox", binds = { value = "HeraEnabled" },              label = "Hera",             quick = true },
+            { type = "checkbox", binds = { value = "HestiaEnabled" },            label = "Hestia",           quick = true },
+            { type = "checkbox", binds = { value = "PoseidonEnabled" },          label = "Poseidon",         quick = true },
+            { type = "checkbox", binds = { value = "ZeusEnabled" },              label = "Zeus",             quick = true },
 
-    { type = "separator", label = "Options" },
-    { type = "checkbox", binds = { value = "KeepsakeAddsGod" },                  label = "God Keepsakes Add to The Pool" },
-    { type = "checkbox", binds = { value = "PreventEarlySeleneHermes" },         label = "Prevent Early Selene/Hermes" },
-    { type = "checkbox", binds = { value = "BoostElementGathering" },            label = "Guarantee Element from Gathering Tool" },
-    { type = "checkbox", binds = { value = "PrioritizeHammerFirstRoomEnabled" }, label = "Force Hammer First Room" },
+            { type = "text", text = "Options" },
+            { type = "checkbox", binds = { value = "KeepsakeAddsGod" },                  label = "God Keepsakes Add to The Pool" },
+            { type = "checkbox", binds = { value = "PreventEarlySeleneHermes" },         label = "Prevent Early Selene/Hermes" },
+            { type = "checkbox", binds = { value = "BoostElementGathering" },            label = "Guarantee Element from Gathering Tool" },
+            { type = "checkbox", binds = { value = "PrioritizeHammerFirstRoomEnabled" }, label = "Force Hammer First Room" },
+        },
+    },
 }
 
 public.store = lib.createStore(config, public.definition, dataDefaults)
