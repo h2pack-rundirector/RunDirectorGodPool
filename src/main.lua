@@ -57,7 +57,7 @@ public.definition.ui = {
         gap = 8,
         children = {
             { type = "text", text = "God Pool" },
-            { type = "stepper",  binds = { value = "MaxGodsPerRun" },            label = "Max Gods Per Run", quick = true, min = 1, max = 9, step = 1 },
+            { type = "dropdown", binds = { value = "MaxGodsPerRun" },            label = "Max Gods Per Run", quick = true, values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, controlGap = 20, controlWidth = 60 },
             { type = "checkbox", binds = { value = "AphroditeEnabled" },         label = "Aphrodite",        quick = true },
             { type = "checkbox", binds = { value = "ApolloEnabled" },            label = "Apollo",           quick = true },
             { type = "checkbox", binds = { value = "AresEnabled" },              label = "Ares",             quick = true },
@@ -77,9 +77,6 @@ public.definition.ui = {
     },
 }
 
-public.store = lib.store.create(config, public.definition, dataDefaults)
-store = public.store
-
 -- =============================================================================
 -- FILL: apply() — mutate game data (use backup before changes)
 -- =============================================================================
@@ -89,6 +86,9 @@ public.definition.patchPlan = function(plan)
         internal.BuildPatchPlan(plan)
     end
 end
+
+public.store = lib.store.create(config, public.definition, dataDefaults)
+store = public.store
 
 -- =============================================================================
 -- FILL: registerHooks() — wrap game functions
