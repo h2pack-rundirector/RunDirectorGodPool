@@ -28,7 +28,6 @@ public.definition = {
     modpack      = PACK_ID, -- Opts this module into pack discovery
     id           = "GodPool",
     name         = "God Pool",
-    category     = "God Pool",
     tooltip      = "Control which gods enter the run, first-room hammer behavior, and pool support rules.",
     default      = dataDefaults.Enabled,
     affectsRunData = true, -- true if lifecycle changes require run-data rebuilds, false for hook-only mods
@@ -142,7 +141,7 @@ modutil.once_loaded.game(function()
     loader.load(init, init)
 end)
 
-local standaloneUi = lib.special.standaloneUI(
+local standaloneUi = lib.host.standaloneUI(
     public.definition,
     store,
     store.uiState,
