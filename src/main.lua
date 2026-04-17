@@ -51,32 +51,6 @@ public.definition.storage = {
     { type = "bool",   alias = "PrioritizeHammerFirstRoomEnabled", configKey = "PrioritizeHammerFirstRoomEnabled" },
 }
 
-public.definition.ui = {
-    {
-        type = "vstack",
-        gap = 8,
-        children = {
-            { type = "text", text = "God Pool" },
-            { type = "dropdown", binds = { value = "MaxGodsPerRun" },            label = "Max Gods Per Run", quick = true, values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, controlGap = 20, controlWidth = 60 },
-            { type = "checkbox", binds = { value = "AphroditeEnabled" },         label = "Aphrodite",        quick = true },
-            { type = "checkbox", binds = { value = "ApolloEnabled" },            label = "Apollo",           quick = true },
-            { type = "checkbox", binds = { value = "AresEnabled" },              label = "Ares",             quick = true },
-            { type = "checkbox", binds = { value = "DemeterEnabled" },           label = "Demeter",          quick = true },
-            { type = "checkbox", binds = { value = "HephaestusEnabled" },        label = "Hephaestus",       quick = true },
-            { type = "checkbox", binds = { value = "HeraEnabled" },              label = "Hera",             quick = true },
-            { type = "checkbox", binds = { value = "HestiaEnabled" },            label = "Hestia",           quick = true },
-            { type = "checkbox", binds = { value = "PoseidonEnabled" },          label = "Poseidon",         quick = true },
-            { type = "checkbox", binds = { value = "ZeusEnabled" },              label = "Zeus",             quick = true },
-
-            { type = "text", text = "Options" },
-            { type = "checkbox", binds = { value = "KeepsakeAddsGod" },                  label = "God Keepsakes Add to The Pool" },
-            { type = "checkbox", binds = { value = "PreventEarlySeleneHermes" },         label = "Prevent Early Selene/Hermes" },
-            { type = "checkbox", binds = { value = "BoostElementGathering" },            label = "Guarantee Element from Gathering Tool" },
-            { type = "checkbox", binds = { value = "PrioritizeHammerFirstRoomEnabled" }, label = "Force Hammer First Room" },
-        },
-    },
-}
-
 -- =============================================================================
 -- FILL: apply() — mutate game data (use backup before changes)
 -- =============================================================================
@@ -89,6 +63,45 @@ end
 
 public.store = lib.store.create(config, public.definition, dataDefaults)
 store = public.store
+
+local function DrawSectionHeading(imgui, text)
+    lib.widgets.text(imgui, text)
+    lib.widgets.separator(imgui)
+end
+
+function internal.DrawTab(imgui, uiState)
+    DrawSectionHeading(imgui, "God Pool")
+    lib.widgets.dropdown(imgui, uiState, "MaxGodsPerRun", {
+        label = "Max Gods Per Run",
+        values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+        controlGap = 20,
+        controlWidth = 60,
+    })
+    lib.widgets.checkbox(imgui, uiState, "AphroditeEnabled", { label = "Aphrodite" })
+    lib.widgets.checkbox(imgui, uiState, "ApolloEnabled", { label = "Apollo" })
+    lib.widgets.checkbox(imgui, uiState, "AresEnabled", { label = "Ares" })
+    lib.widgets.checkbox(imgui, uiState, "DemeterEnabled", { label = "Demeter" })
+    lib.widgets.checkbox(imgui, uiState, "HephaestusEnabled", { label = "Hephaestus" })
+    lib.widgets.checkbox(imgui, uiState, "HeraEnabled", { label = "Hera" })
+    lib.widgets.checkbox(imgui, uiState, "HestiaEnabled", { label = "Hestia" })
+    lib.widgets.checkbox(imgui, uiState, "PoseidonEnabled", { label = "Poseidon" })
+    lib.widgets.checkbox(imgui, uiState, "ZeusEnabled", { label = "Zeus" })
+
+    imgui.Spacing()
+    DrawSectionHeading(imgui, "Options")
+    lib.widgets.checkbox(imgui, uiState, "KeepsakeAddsGod", {
+        label = "God Keepsakes Add to The Pool",
+    })
+    lib.widgets.checkbox(imgui, uiState, "PreventEarlySeleneHermes", {
+        label = "Prevent Early Selene/Hermes",
+    })
+    lib.widgets.checkbox(imgui, uiState, "BoostElementGathering", {
+        label = "Guarantee Element from Gathering Tool",
+    })
+    lib.widgets.checkbox(imgui, uiState, "PrioritizeHammerFirstRoomEnabled", {
+        label = "Force Hammer First Room",
+    })
+end
 
 -- =============================================================================
 -- FILL: registerHooks() — wrap game functions
@@ -129,7 +142,17 @@ modutil.once_loaded.game(function()
     loader.load(init, init)
 end)
 
--- Standalone UI — menu-bar toggle when coordinator is not installed
-local uiCallback = lib.coordinator.standaloneUI(public.definition, store)
+local standaloneUi = lib.special.standaloneUI(
+    public.definition,
+    store,
+    store.uiState,
+    {
+        drawTab = internal.DrawTab,
+    }
+)
+
 ---@diagnostic disable-next-line: redundant-parameter
-rom.gui.add_to_menu_bar(uiCallback)
+rom.gui.add_imgui(standaloneUi.renderWindow)
+
+---@diagnostic disable-next-line: redundant-parameter
+rom.gui.add_to_menu_bar(standaloneUi.addMenuBar)
