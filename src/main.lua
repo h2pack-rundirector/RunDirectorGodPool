@@ -80,17 +80,6 @@ local function init()
     import("mods/ui.lua")
     public.store = lib.store.create(config, public.definition, dataDefaults)
     store = public.store
-    internal.SetUiColors({
-        AphroditeEnabled  = { game.Color.AphroditeDamage[1] / 255, game.Color.AphroditeDamage[2] / 255, game.Color.AphroditeDamage[3] / 255, game.Color.AphroditeDamage[4] / 255 },
-        ApolloEnabled     = { game.Color.ApolloDamageLight[1] / 255, game.Color.ApolloDamageLight[2] / 255, game.Color.ApolloDamageLight[3] / 255, game.Color.ApolloDamageLight[4] / 255 },
-        AresEnabled       = { game.Color.AresDamageLight[1] / 255, game.Color.AresDamageLight[2] / 255, game.Color.AresDamageLight[3] / 255, game.Color.AresDamageLight[4] / 255 },
-        DemeterEnabled    = { game.Color.DemeterDamage[1] / 255, game.Color.DemeterDamage[2] / 255, game.Color.DemeterDamage[3] / 255, game.Color.DemeterDamage[4] / 255 },
-        HephaestusEnabled = { game.Color.HephaestusDamage[1] / 255, game.Color.HephaestusDamage[2] / 255, game.Color.HephaestusDamage[3] / 255, game.Color.HephaestusDamage[4] / 255 },
-        HeraEnabled       = { game.Color.HeraDamage[1] / 255, game.Color.HeraDamage[2] / 255, game.Color.HeraDamage[3] / 255, game.Color.HeraDamage[4] / 255 },
-        HestiaEnabled     = { game.Color.HestiaDamageLight[1] / 255, game.Color.HestiaDamageLight[2] / 255, game.Color.HestiaDamageLight[3] / 255, game.Color.HestiaDamageLight[4] / 255 },
-        PoseidonEnabled   = { game.Color.PoseidonDamage[1] / 255, game.Color.PoseidonDamage[2] / 255, game.Color.PoseidonDamage[3] / 255, game.Color.PoseidonDamage[4] / 255 },
-        ZeusEnabled       = { game.Color.ZeusDamageLight[1] / 255, game.Color.ZeusDamageLight[2] / 255, game.Color.ZeusDamageLight[3] / 255, game.Color.ZeusDamageLight[4] / 255 },
-    })
     registerHooks()
     if lib.coordinator.isEnabled(store, public.definition.modpack) then
         lib.mutation.apply(public.definition, store)
