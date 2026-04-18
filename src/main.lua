@@ -48,6 +48,26 @@ public.definition.storage = {
     { type = "bool",   alias = "PrioritizeHammerFirstRoomEnabled", configKey = "PrioritizeHammerFirstRoomEnabled" },
 }
 
+public.definition.hashGroups = {
+    {
+        key = "pool_1",
+        "MaxGodsPerRun",
+        "AphroditeEnabled",
+        "ApolloEnabled",
+        "AresEnabled",
+        "DemeterEnabled",
+        "HephaestusEnabled",
+        "HeraEnabled",
+        "HestiaEnabled",
+        "PoseidonEnabled",
+        "ZeusEnabled",
+        "KeepsakeAddsGod",
+        "PreventEarlySeleneHermes",
+        "BoostElementGathering",
+        "PrioritizeHammerFirstRoomEnabled",
+    },
+}
+
 -- =============================================================================
 -- FILL: apply() — mutate game data (use backup before changes)
 -- =============================================================================
