@@ -8,7 +8,7 @@ local function Read(key)
 end
 
 local function IsEnabled()
-    return lib.coordinator.isEnabled(store, public.definition.modpack)
+    return lib.isModuleEnabled(store, public.definition.modpack)
 end
 
 function internal.GetRunState()
@@ -158,3 +158,4 @@ function internal.RegisterHooks()
         return base(eventSource, args)
     end)
 end
+

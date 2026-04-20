@@ -78,8 +78,9 @@ public.definition.patchPlan = function(plan)
     end
 end
 
-public.store = nil
+public.host = nil
 store = nil
+internal.session = nil
 internal.standaloneUi = nil
 -- =============================================================================
 -- FILL: registerHooks() — wrap game functions
@@ -90,31 +91,22 @@ local function registerHooks()
     if internal.RegisterHooks then
         internal.RegisterHooks()
     end
-    public.DrawTab = internal.DrawTab
-    public.DrawQuickContent = internal.DrawQuickContent
 end
 
 local function init()
     import_as_fallback(rom.game)
     import("mods/data.lua")
     import("mods/ui.lua")
-    public.store = lib.store.create(config, public.definition, dataDefaults)
-    store = public.store
+    store, internal.session = lib.createStore(config, public.definition, dataDefaults)
     registerHooks()
-    if lib.coordinator.isEnabled(store, public.definition.modpack) then
-        lib.mutation.apply(public.definition, store)
-    end
-    if public.definition.affectsRunData and not lib.coordinator.isCoordinated(public.definition.modpack) then
-        SetupRunData()
-    end
-    internal.standaloneUi = lib.host.standaloneUI(
-        public.definition,
-        store,
-        store.uiState,
-        {
-            drawTab = internal.DrawTab,
-        }
-    )
+    public.host = lib.createModuleHost({
+        definition = public.definition,
+        store = store,
+        session = internal.session,
+        drawTab = internal.DrawTab,
+        drawQuickContent = internal.DrawQuickContent,
+    })
+    internal.standaloneUi = lib.standaloneHost(public.host)
 end
 
 -- =============================================================================
@@ -126,6 +118,19 @@ public.isGodEnabledInPool = function(godKey)
         return internal.IsGodEnabledInPool(godKey)
     end
     return true
+end
+
+public.getBoonBansFilterState = function(godKey)
+    local filteringActive = lib.isModuleEnabled(store, public.definition.modpack)
+    if not filteringActive then
+        return false, true
+    end
+
+    if internal.IsGodEnabledInPool then
+        return true, internal.IsGodEnabledInPool(godKey)
+    end
+
+    return true, true
 end
 
 local loader = reload.auto_single()
@@ -147,3 +152,5 @@ rom.gui.add_to_menu_bar(function()
         internal.standaloneUi.addMenuBar()
     end
 end)
+
+
