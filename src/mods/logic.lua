@@ -79,7 +79,7 @@ function internal.BuildPatchPlan(plan)
 end
 
 function internal.RegisterHooks()
-    modutil.mod.Path.Wrap("GetEligibleLootNames", function(base, excludeLootNames)
+    lib.hooks.Wrap(internal, "GetEligibleLootNames", function(base, excludeLootNames)
         if not IsEnabled() then return base(excludeLootNames) end
 
         local state = internal.GetRunState()
@@ -121,7 +121,7 @@ function internal.RegisterHooks()
         return filtered
     end)
 
-    modutil.mod.Path.Wrap("ReachedMaxGods", function(base, excludedGods)
+    lib.hooks.Wrap(internal, "ReachedMaxGods", function(base, excludedGods)
         if not IsEnabled() then return base(excludedGods) end
         local state = internal.GetRunState()
         if not state then return base(excludedGods) end
@@ -132,7 +132,7 @@ function internal.RegisterHooks()
         return TableLength(gods) >= maxGods
     end)
 
-    modutil.mod.Path.Wrap("GiveLoot", function(base, args)
+    lib.hooks.Wrap(internal, "GiveLoot", function(base, args)
         if not IsEnabled() then return base(args) end
         local state = internal.GetRunState()
         if not state then return base(args) end
@@ -152,7 +152,7 @@ function internal.RegisterHooks()
         return base(args)
     end)
 
-    modutil.mod.Path.Wrap("SpawnRoomReward", function(base, eventSource, args)
+    lib.hooks.Wrap(internal, "SpawnRoomReward", function(base, eventSource, args)
         if IsEnabled() and Read("PrioritizeHammerFirstRoomEnabled") and
         CurrentRun and CurrentRun.CurrentRoom and CurrentRun.CurrentRoom.BiomeStartRoom then
             args = args or {}
@@ -164,4 +164,3 @@ function internal.RegisterHooks()
         return base(eventSource, args)
     end)
 end
-
