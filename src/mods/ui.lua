@@ -32,7 +32,7 @@ local function DrawSectionHeading(imgui, text)
 end
 
 function internal.ResetAllControls(session)
-    local changed = lib.resetStorageToDefaults(public.definition.storage, session)
+    local changed = lib.resetStorageToDefaults(internal.definition.storage, session)
     return changed
 end
 

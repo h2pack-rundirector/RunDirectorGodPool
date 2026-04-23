@@ -1,7 +1,7 @@
 RunDirectorGodPool_Internal = RunDirectorGodPool_Internal or {}
 local internal = RunDirectorGodPool_Internal
 
-public.definition.storage = {
+internal.definition.storage = {
     { type = "int",  alias = "MaxGodsPerRun",                    configKey = "MaxGodsPerRun",                    min = 1, max = 9 },
     { type = "bool", alias = "AphroditeEnabled",                 configKey = "AphroditeEnabled" },
     { type = "bool", alias = "ApolloEnabled",                    configKey = "ApolloEnabled" },
@@ -18,7 +18,7 @@ public.definition.storage = {
     { type = "bool", alias = "PrioritizeHammerFirstRoomEnabled", configKey = "PrioritizeHammerFirstRoomEnabled" },
 }
 
-public.definition.hashGroups = {
+internal.definition.hashGroups = {
     {
         key = "pool_1",
         "MaxGodsPerRun",

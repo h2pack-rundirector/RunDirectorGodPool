@@ -8,10 +8,10 @@ local function Read(key)
 end
 
 local function IsEnabled()
-    return lib.isModuleEnabled(internal.store, public.definition.modpack)
+    return lib.isModuleEnabled(internal.store, internal.definition.modpack)
 end
 
-public.definition.patchPlan = function(plan)
+internal.definition.patchPlan = function(plan)
     if internal.BuildPatchPlan then
         internal.BuildPatchPlan(plan)
     end

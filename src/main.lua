@@ -16,6 +16,7 @@ local config = chalk.auto('config.lua')
 
 local PACK_ID = "run-director"
 ---@class RunDirectorGodPoolInternal
+---@field definition ModuleDefinition|nil
 ---@field store ManagedStore|nil
 ---@field standaloneUi StandaloneRuntime|nil
 ---@field RegisterHooks fun()|nil
@@ -34,6 +35,7 @@ public.definition = {
     default = dataDefaults.Enabled,
     affectsRunData = true,
 }
+internal.definition = public.definition
 
 public.host = nil
 local store
@@ -46,11 +48,11 @@ local function init()
     import("mods/logic.lua")
     import("mods/ui.lua")
 
-    store, session = lib.createStore(config, public.definition, dataDefaults)
+    store, session = lib.createStore(config, internal.definition, dataDefaults)
     internal.store = store
 
     public.host = lib.createModuleHost({
-        definition = public.definition,
+        definition = internal.definition,
         store = store,
         session = session,
         hookOwner = internal,
@@ -69,7 +71,7 @@ public.isGodEnabledInPool = function(godKey)
 end
 
 public.getBoonBansFilterState = function(godKey)
-    local filteringActive = lib.isModuleEnabled(internal.store, public.definition.modpack)
+    local filteringActive = lib.isModuleEnabled(internal.store, internal.definition.modpack)
     if not filteringActive then
         return false, true
     end
