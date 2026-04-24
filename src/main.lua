@@ -20,6 +20,7 @@ local PACK_ID = "run-director"
 ---@field store ManagedStore|nil
 ---@field standaloneUi StandaloneRuntime|nil
 ---@field RegisterHooks fun()|nil
+---@field RegisterIntegrations fun()|nil
 ---@field DrawTab fun(imgui: table, session: AuthorSession)|nil
 ---@field DrawQuickContent fun(imgui: table, session: AuthorSession)|nil
 ---@field IsGodEnabledInPool fun(godKey: string): boolean|nil
@@ -46,6 +47,7 @@ local function init()
     import_as_fallback(rom.game)
     import("mods/data.lua")
     import("mods/logic.lua")
+    import("mods/integrations.lua")
     import("mods/ui.lua")
 
     store, session = lib.createStore(config, internal.definition, dataDefaults)
@@ -60,27 +62,8 @@ local function init()
         drawTab = internal.DrawTab,
         drawQuickContent = internal.DrawQuickContent,
     })
+    internal.RegisterIntegrations()
     internal.standaloneUi = lib.standaloneHost(public.host)
-end
-
-public.isGodEnabledInPool = function(godKey)
-    if internal.IsGodEnabledInPool then
-        return internal.IsGodEnabledInPool(godKey)
-    end
-    return true
-end
-
-public.getBoonBansFilterState = function(godKey)
-    local filteringActive = lib.isModuleEnabled(internal.store, internal.definition.modpack)
-    if not filteringActive then
-        return false, true
-    end
-
-    if internal.IsGodEnabledInPool then
-        return true, internal.IsGodEnabledInPool(godKey)
-    end
-
-    return true, true
 end
 
 local loader = reload.auto_single()
