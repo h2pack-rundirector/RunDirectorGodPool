@@ -28,7 +28,10 @@ local COLORS = BuildColors()
 
 local MAX_GODS_DROPDOWN_OPTS = {
     label = "Max Gods Per Run",
-    values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+    valueRange = {
+        min = 1,
+        max = 9,
+    },
     controlGap = 20,
     controlWidth = 60,
 }
